@@ -1,0 +1,57 @@
+{
+    "environments": [
+        {
+            "name": "Region-1",
+            "datacenters": [
+                {
+                    "name": "Cell-1",
+                    "keystone": "http://keystone.cell1.aurora.com:5000/v2.0/",
+                    "customservices": [
+                        {
+                            "type": "image",
+                            "uri": "http:///images.cell1.aurora.com:9292/v1"
+
+                        }
+                    ]
+                },
+                {
+                    "name": "Cell-2",
+                    "keystone": "keystone.cell2.aurora.com:5000/v2.0/",
+                    "customservices": [
+                        {
+                            "type": "image",
+                            "uri": "http://images.cell2.aurora.com:9292/v1"
+                        }
+                    ]
+                }
+            ]
+        },
+	{
+            "name": "Region-2",
+            "datacenters": [
+                {
+                    "name": "Cell-3",
+                    "keystone": "http://keystone.cell3.aurora.com:5000/v2.0/",
+                    "customservices": [
+                        {
+                            "type": "image",
+                            "uri": "http://images.cell3.aurora.com:9292/v1"
+
+                        }
+                    ]
+                },
+                {
+                    "name": "Cell-4",
+                    "keystone": "keystone.cell4.aurora.com:5000/v2.0/",
+                    "customservices": [
+                        {
+                            "type": "image",
+                            "uri": "http://images.cell3.aurora.com:9292/v1"
+                        }
+                    ]
+                }
+            ]
+        }
+
+    ]
+}
