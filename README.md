@@ -1,6 +1,6 @@
 ## DESCRIPTION
 
-The project 'aurora' is developed using 'Netflix OSS - Asgard' framework to work with OpenStack based Cloud. aurora is capable of managing Cloud which is built across multi-datacenter and multiple regions.
+The project 'aurora' is developed using 'Netflix OSS - Asgard' framework to work with OpenStack based Cloud. aurora is capable of managing OpenStack Cloud which is built across multi-datacenter and multiple regions.
 
 ## DOWNLOAD
 
