@@ -1,6 +1,6 @@
 ## DESCRIPTION
 
-aurora is a web-based application for managing OpenStack based Cloud.
+The project 'aurora' is developed using 'Asgard' framework to work with OpenStack based Cloud. aurora is capable of managing Cloud which is built across multi-datacenter and multiple regions.
 
 ## DOWNLOAD
 
