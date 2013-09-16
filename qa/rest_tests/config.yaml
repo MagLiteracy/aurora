@@ -1,0 +1,76 @@
+#Configuration file for rest tests.
+
+# prefix for generated object names
+prefix: 'rest_'
+
+#lab: '172.18.198.44'
+lab: '172.18.172.7'
+
+172.18.198.44:
+  host: '172.18.198.44'
+  port: '8080'
+  environment: 'kharkov-dev'
+  username: 'admin'
+  password: 'local1lab'
+  # used to connect to the lab via ssh and run console commands
+  sshuser: 'root'
+  sshpassword: 'swordfish'
+  lab_prefix: ''
+  suffix: ''
+  flavor: 'XX-Small'
+  keypair: 'heat_key'
+
+172.18.172.7:
+  host: '172.18.172.7'
+  port: '8080'
+  environment: 'kharkov-dev'
+  username: 'admin'
+  password: 'local1lab'
+  # used to connect to the lab via ssh and run console commands
+  sshuser: 'root'
+  sshpassword: 'swordfish'
+  lab_prefix: ''
+  suffix: ''
+  flavor: 'XX-Small'
+  keypair: 'heat_key'
+
+172.18.172.8:
+  host: '172.18.172.8'
+  port: '8080'
+  environment: 'kharkov-dev'
+  username: 'admin'
+  password: 'local1lab'
+  # used to connect to the lab via ssh and run console commands
+  sshuser: 'root'
+  sshpassword: 'swordfish'
+  lab_prefix: ''
+  suffix: ''
+  flavor: 'XX-Small'
+  keypair: 'heat_key'
+
+'aurora.qa.paypal.com':
+  host: aurora.qa.paypal.com
+  port: '80'
+  username: 'admin'
+  password: 'lvs1devqa'
+  environment: 'QA'
+  lab_prefix: ''
+  suffix: '3001'
+  sshuser: 'root'
+  sshpassword: 'sjn1lab'
+  flavor: 'XX-Small'
+  keypair: 'heat_key'
+
+'127.0.0.1':
+  host: 127.0.0.1
+  port: '8085'
+  username: 'admin'
+  password: 'sjn1lab'
+  environment: 'paypal'
+  lab_prefix: 'sjn'
+  suffix: '3001'
+  sshuser: 'root'
+  sshpassword: 'sjn1lab'
+  flavor: 'm1.tiny'
+  keypair: 'pp_keypair'
+

@@ -1,0 +1,32 @@
+{
+    "environments": [
+        {
+            "name": "kharkov-dev",
+            "datacenters": [
+                {
+                    "name": "local-lab1",
+                    "keystone": "http://172.18.198.44:5000/v2.0/",
+                    "flags":["instance_create_send_availibility_zone"],
+                    "customservices": [
+                        {
+                            "type": "image",
+                            "uri": "http://172.18.198.44:9292/v1"
+
+                        }
+                    ]
+                },
+                {
+                    "name": "local-lab1_copy",
+                    "keystone": "http://172.18.198.44:5000/v2.0/",
+                    "flags":["instance_create_send_availibility_zone"],
+                    "customservices": [
+                        {
+                            "type": "image",
+                            "uri": "http://172.18.198.44:9292/v1"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

@@ -1,0 +1,3 @@
+apt-get install ia32-libs-gtk
+ftp://ftp.mozilla.org/pub/firefox/releases/20.0/linux-x86_64/en-US/firefox-20.0.tar.bz2
+hftp://ftp.mozilla.org/pub/firefox/releases/20.0/linux-i686/en-US/firefox-20.0.tar.bz2

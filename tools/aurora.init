@@ -1,0 +1,107 @@
+#!/bin/sh
+#
+# chkconfig:   - 98 02
+#
+# aurora  OpenStack Aurora Dashboard Service
+#
+### END INIT INFO
+
+. /etc/rc.d/init.d/functions
+
+export AURORA_HOME="/etc/aurora"
+source ${AURORA_HOME}/aurora.sh
+
+prog="aurora"
+lockfile=/var/lock/subsys/${prog}
+
+function test_log_dir {
+
+test -d ${AURORA_LOG_DIR}  || mkdir ${AURORA_LOG_DIR}
+chown -R aurora:aurora ${AURORA_LOG_DIR}
+
+}
+
+start() {
+    echo -n $"Starting $prog: "
+    test_log_dir
+    JACOCO_AGENT=""
+
+    if [ "$1" == "coverage" ]
+    then JACOCO_AGENT="-javaagent:/tmp/jacocoagent.jar=destfile=/tmp/jacoco.exec,append=false"
+    fi
+    echo $JACOCO_AGENT
+    /usr/bin/sudo -u aurora AURORA_HOME=${AURORA_HOME} java -Xmx1024M -XX:MaxPermSize=128m -Dlogger.dir=${AURORA_LOG_DIR} $JACOCO_AGENT $AURORA_DEBUG -jar /opt/aurora/target/standalone-1.1.1.jar "" $BIND_ADDRES $AURORA_HTTP_PORT $AURORA_HTTPS_PORT  >${AURORA_LOG_DIR}/${AURORA_CONSOLE_OUTPUT_FILE} 2>${AURORA_LOG_DIR}/${AURORA_ERRORS_FILE} &
+
+    AURORA_PID=$!
+    echo ${AURORA_PID}
+    echo ${AURORA_PID} > ${AURORA_PID_FILE}
+    sleep 1
+    retval=0
+    echo
+    [ $retval -eq 0 ] && touch $lockfile
+    return $retval
+}
+
+stop() {
+    echo -n $"Stopping $prog: "
+    for AURORA_PID in `/bin/ps auxfw | grep "java" | grep "\-jar /opt/aurora/target/standalone-1.1.1.jar" | grep -v  grep | awk '{ print $2}'`
+    do
+	echo AURORA_PID=$AURORA_PID
+	/usr/bin/sudo kill ${AURORA_PID}
+    done
+    retval=0
+    echo
+    [ $retval -eq 0 ] && rm -f $lockfile
+    return $retval
+}
+
+restart() {
+    stop
+    sleep 1
+    start $1
+}
+
+
+
+
+status() {
+    if test -f ${AURORA_PID_FILE}
+    then
+        AURORA_PID=`cat ${AURORA_PID_FILE}`
+        if [ ! -e /proc/${AURORA_PID} -a /proc/${AURORA_PID_FILE}/exe ];
+        then
+            echo "Pid file exists but process is dead"
+            retval=1
+        else
+            echo OK
+            retval=0
+        fi
+    else
+        echo "Aurora is stopped (no pid file)"
+        retval=1
+    fi
+}
+
+
+case "$1" in
+    start)
+        $1
+        ;;
+    stop)
+        $1
+        ;;
+    restart)
+        $1 $2
+        ;;
+    status)
+        $1
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|status}"
+        exit 2
+esac
+exit $?
+
+
+
+

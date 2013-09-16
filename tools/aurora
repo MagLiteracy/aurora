@@ -1,0 +1,146 @@
+#!/bin/sh
+#
+# chkconfig:   - 98 02
+#
+# aurora  OpenStack Aurora Dashboard Service
+#
+### END INIT INFO
+. /etc/rc.d/init.d/functions
+
+export AURORA_HOME="/etc/aurora"
+source ${AURORA_HOME}/aurora.sh
+
+prog="aurora"
+AURORA_USER="aurora"
+JAR_FILE=/opt/aurora/target/aurora-standalone.jar
+lockfile=/var/lock/subsys/${prog}
+pidfile="/var/run/aurora/aurora.pid"
+AURORA_PID_DIR=/var/run/aurora
+
+function test_log_dir {
+   test -d ${AURORA_LOG_DIR}  || mkdir ${AURORA_LOG_DIR}
+   chown -R aurora:aurora ${AURORA_LOG_DIR}
+   test -d ${AURORA_PID_DIR}  || mkdir ${AURORA_PID_DIR}
+   chown -R aurora:aurora ${AURORA_PID_DIR}
+}
+
+start() {
+    echo -n $"Starting $prog: "
+    test_log_dir
+
+    JACOCO_AGENT=""
+    if [ "$1" == "coverage" ]; then
+      JACOCO_AGENT="-javaagent:/tmp/jacocoagent.jar=destfile=/tmp/jacoco.exec,append=false"
+      echo $JACOCO_AGENT
+    fi
+
+    daemon --user $AURORA_USER --pidfile $pidfile "java -Xmx1024M -XX:MaxPermSize=128m -Dlogger.dir=${AURORA_LOG_DIR} $JACOCO_AGENT $AURORA_DEBUG -jar $JAR_FILE \"\" $BIND_ADDRES $AURORA_HTTP_PORT $AURORA_HTTPS_PORT  >${AURORA_LOG_DIR}/${AURORA_CONSOLE_OUTPUT_FILE} 2>>${AURORA_LOG_DIR}/${AURORA_ERRORS_FILE} & echo \$! > $pidfile" 
+    RETVAL=$?
+    sleep 1
+    echo
+    [ $RETVAL = 0 ] && touch ${lockfile}
+    return $RETVAL
+}
+
+stop() {
+   echo -n $"Stopping $prog: "
+   RETVAL=0
+   if [ -f "${pidfile}" ]; then
+       read kpid < ${pidfile}
+       kill $kpid 
+       sleep 1
+       if [ "$(ps --pid $kpid | grep -c $kpid)" -gt "0" ]; then 
+            kill -9 $kpid
+       fi
+       success; echo
+       rm -f /var/lock/subsys/${prog} ${pidfile}
+   else
+       failure; echo
+       RETVAL="4"
+   fi
+   return $RETVAL
+}
+
+restart() {
+    stop
+    sleep 1
+    start $1
+}
+
+status() {
+   checkpidfile
+   if [ "$RETVAL" -eq "0" ]; then
+      echo "${prog} (pid ${kpid}) is running..."
+   elif [ "$RETVAL" -eq "1" ]; then
+      echo "PID file exists, but process is not running"
+   else
+      checklockfile
+      if [ "$RETVAL" -eq "2" ]; then
+         echo "${prog} lockfile exists but process is not running"
+      else
+         pid="$(/usr/bin/pgrep -u ${AURORA_USER} -f ${prog})"
+         if [ -z "$pid" ]; then
+             echo "${prog} is stopped"
+             RETVAL="3"
+         else
+             echo "${prog} (pid $pid) is running..."
+             RETVAL="0"
+         fi
+      fi
+  fi
+  return $RETVAL
+}
+
+##################
+function checklockfile()
+{
+   if [ -f /var/lock/subsys/${prog} ]; then
+      pid="$(/usr/bin/pgrep -u ${AURORA_USER} -f ${prog})"
+# The lockfile exists but the process is not running
+      if [ -z "$pid" ]; then
+         RETVAL="2"
+      fi
+   fi
+}
+
+function checkpidfile()
+{
+   if [ -f "${pidfile}" ]; then
+      read kpid < ${pidfile}
+      if [ -d "/proc/${kpid}" ]; then
+# The pid file exists and the process is running
+          RETVAL="0"
+      else
+# The pid file exists but the process is not running
+         RETVAL="1"
+         return
+      fi
+   fi
+# pid file does not exist and program is not running
+   RETVAL="3"
+}
+###################
+
+RETVAL="0"
+case "$1" in
+    start)
+        $1
+        ;;
+    stop)
+        $1
+        ;;
+    restart)
+        $1 $2
+        ;;
+    status)
+        $1
+        ;;
+    *)
+        echo $"Usage: $0 {start|stop|restart|status}"
+        exit 2
+esac
+exit $RETVAL
+
+
+
+

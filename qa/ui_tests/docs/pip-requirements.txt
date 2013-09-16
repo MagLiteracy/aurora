@@ -1,0 +1,11 @@
+PyYAML
+nose
+nose-testconfig
+nose-exclude
+requests
+selenium
+beautifulsoup4
+# scpclient
+# paramiko
+# pycrypto
+# pika

@@ -1,0 +1,5 @@
+.buttons button        { margin-left: -30px; margin-right: -30px; }
+li .buttons button     { margin-left: -12px; margin-right: -18px; }
+.buttons button div    { padding-top: 5px; }
+.groupReplacingPush li { width: 320px; }
+.groupReplacingPush li button.create { margin-left: -50px; }
